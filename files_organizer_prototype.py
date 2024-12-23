@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # # -*- coding: utf-8 -*-
 """files organizer"""
-__author__=""
+__author__="Toan Ngo"
 #prototype 
+#version=0.5
 import os
 import shutil
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -220,9 +221,11 @@ def search_folder(target_directory:str,extenstion:str,file_name:str)->list|str:
          print("here all the files that similar to the requested files ")
          #print(return_packet_alt_dict)
          for item,value in return_packet_alt_dict.items():
-              print(f'{item}:\t {value}')
-    if search_condition:
+            print(f'{item}:\t {value}')
+        #return
+    elif search_condition:            #find the file !!
         print(f'{file_name_com}:\t{route}')
+        return
         #print(return_packet_alt_dict)
     else:
         if not return_packet_alt_dict:
@@ -231,7 +234,7 @@ def search_folder(target_directory:str,extenstion:str,file_name:str)->list|str:
         #    print(return_packet)
         else:
              print("there are no files in the target directory")
-
+            
 def check_directory(main_directory:str)->list:          #return what directory in the current destination
      route=main_directory
      container_directory=[directory for directory in os.listdir(route) if os.path.isdir(os.path.join(route,directory))]
@@ -316,12 +319,13 @@ def activation(mode:str)->None:
     #one directory mode
     #check_point=["","none"]
    # bot=False
-    check=input("you want to use local files [execution] or [change directory]: ").strip().lower()
+    check=input("you want to use local files [execution](do stuff where this file is located) or [change directory]: ").strip().lower()
     check_re=True
     while True:
         if check in ["quit","terminate","stop","exit"]:
              return
         if check in["execution local","lex"]:
+            check_re=False
             break
         elif check in ["change directory","cd"]:
             user_currentDT=input("please enter the current directory: ")
@@ -335,6 +339,7 @@ def activation(mode:str)->None:
     if mode in ["arrange all","search","create folders","check directory"]:       #all these only need one directory
         if check_re==False:
             user_currentDT=os.getcwd()                          #local execution mode
+            print(user_currentDT)
             #user_currentDT=input("please enter the current directory: ")
             if mode =="arrange all":
                 #sort all files in the folder
@@ -362,7 +367,10 @@ def activation(mode:str)->None:
                 #check point()
                 files_extent=files_extent.lower().strip()
                 file_name=file_name.lower().strip()
-                if files_extent == "" or file_name == "":
+                if(files_extent == "" and file_name == ""):
+                    print("cant not conduct a search if missing both extention and name.....")
+                    return
+                if (files_extent == "" or file_name == ""):
                     print("function call search: ")
                     if(files_extent == ""):
                         files_extent="none"
@@ -378,6 +386,7 @@ def activation(mode:str)->None:
                     print("function creating a folders")
 
                     check_sub(user_currentDT,'[1]')
+            #os.chdir(current_dir[0])
             return user_currentDT
                     
         else:                   #change of directory mode also only mode run by tomoe
@@ -401,10 +410,13 @@ def activation(mode:str)->None:
                 #extra function 
                 print("note:\n this search funtion can only run if you know what files name you looking for or the extention of the files")
                 files_extent=input("please enter the files extention if you know (or leave it empty): ")
-                file_name=input("please enter the files name of the search aplication( or leave it empty): ")
+                file_name=input("please enter the files name of the search application( or leave it empty): ")
                 #check point()
                 files_extent=files_extent.lower().strip()
                 file_name=file_name.lower().strip()
+                if(files_extent == "" and file_name == ""):
+                    print("cant not conduct a search if missing both extention and name.....")
+                    return
                 if files_extent == "" or file_name == "":
                     print("function call search ")
                     if(files_extent == ""):
@@ -425,6 +437,7 @@ def activation(mode:str)->None:
                     print("function creating a folders")
 
                     check_sub(user_currentDT,'[1]')
+            #os.chdir(current_dir[0])
             return user_currentDT
                 
     else:#move file from one diractory to another:
@@ -439,6 +452,7 @@ def activation(mode:str)->None:
                 moving_file(user_destinationDT,user_currentDT,file_type)
         else:
              print("path do not exist !")
+        
         
 #write to file for memo
 def write_to_memo(DT:str)->str:
